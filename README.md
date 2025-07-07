@@ -1,7 +1,7 @@
 # PS4HEN v2.2.0 BETA
 
 ## Features
-- Current Supports 5.05 - 12.02
+- Current Supports 5.05 - 12.50
 - Homebrew Enabler
 - [Plugins System](https://github.com/Scene-Collective/ps4-hen-plugins)
   - Patches ShellUI to allow more features.
