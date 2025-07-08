@@ -321,6 +321,77 @@ PAYLOAD_CODE int sys_dynlib_load_prx_hook(struct thread *td, struct dynlib_load_
   return r;
 }
 
+struct sys_jailbreak_ucred {
+  uint32_t useless1;
+  uint32_t cr_uid;
+  uint32_t cr_ruid;
+  uint32_t useless2;
+  uint32_t useless3;
+  uint32_t cr_rgid;
+  uint32_t useless4;
+  void *useless5;
+  void *useless6;
+  void *cr_prison;
+  void *useless7;
+  uint32_t useless8;
+  void *useless9[2];
+  void *useless10;
+  char auditinfo_addr[184];
+  uint32_t *cr_groups;
+  uint32_t useless12;
+};
+
+struct sys_jailbreak_filedesc {
+  void *useless1[3];
+  void *fd_rdir;
+  void *fd_jdir;
+};
+
+PAYLOAD_CODE void *sys_jailbreak(struct thread *td) {
+  struct sys_jailbreak_ucred *cred = td->td_proc->p_ucred;
+  struct sys_jailbreak_filedesc *fd = td->td_proc->p_fd;
+
+  void *td_ucred = *(void **)(((char *)td) + 304); // p_ucred == td_ucred
+
+  const uint64_t kernel_ptr = getkernbase(fw_offsets->XFAST_SYSCALL_addr);
+  void **got_prison0 = (void **)((uint8_t *)kernel_ptr + fw_offsets->PRISON0_addr);
+  void **got_rootvnode = (void **)((uint8_t *)kernel_ptr + fw_offsets->ROOTVNODE_addr);
+
+  cred->cr_uid = 0;
+  cred->cr_ruid = 0;
+  cred->cr_rgid = 0;
+  cred->cr_groups[0] = 0;
+  cred->cr_prison = *got_prison0;
+  fd->fd_rdir = fd->fd_jdir = *got_rootvnode;
+
+  // sceSblACMgrIsSystemUcred
+  uint64_t *sonyCred = (uint64_t *)(((char *)td_ucred) + 96);
+  *sonyCred = 0xFFFFFFFFFFFFFFFFULL;
+
+  // sceSblACMgrGetDeviceAccessType
+  uint64_t *sceProcType = (uint64_t *)(((char *)td_ucred) + 88);
+  *sceProcType = 0x3801000000000013; // Max access
+
+  // sceSblACMgrHasSceProcessCapability
+  uint64_t *sceProcCap = (uint64_t *)(((char *)td_ucred) + 104);
+  *sceProcCap = 0xFFFFFFFFFFFFFFFFULL; // Sce Process
+
+  return 0;
+}
+
+PAYLOAD_CODE void install_nobd_syscall_hooks(void) {
+  uint64_t flags, cr0;
+
+  cr0 = readCr0();
+  writeCr0(cr0 & ~X86_CR0_WP);
+  flags = intr_disable();
+
+  install_syscall(9, sys_jailbreak);
+
+  intr_restore(flags);
+  writeCr0(cr0);
+}
+
 PAYLOAD_CODE void install_syscall_hooks(void) {
   uint64_t flags, cr0;
 

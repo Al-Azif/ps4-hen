@@ -7,6 +7,8 @@
 const struct kpayload_offsets offsets_803 PAYLOAD_RDATA = {
   // data
   .XFAST_SYSCALL_addr              = 0x000001C0,
+  .PRISON0_addr                    = 0x0111A7D0,
+  .ROOTVNODE_addr                  = 0x01B8C730,
   .M_TEMP_addr                     = 0x01A77E10,
   .MINI_SYSCORE_SELF_BINARY_addr   = 0x01577F28,
   .ALLPROC_addr                    = 0x01B244E0,

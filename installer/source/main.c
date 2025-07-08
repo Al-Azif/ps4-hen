@@ -150,6 +150,7 @@ int _main(struct thread *td) {
     if (found_usb) {
       upload_ini(USB_INI_PATH);
     }
+    init_config(&config);
     printf_notification("Config version (%d/%d)%s\n"
                         "Updating settings file on %s%s...", config.config_version, DEFAULT_CONFIG_VERSION, reason, "HDD", found_usb ? " and USB" : "");
     // sleep so user can see welcome message before shellui restarts

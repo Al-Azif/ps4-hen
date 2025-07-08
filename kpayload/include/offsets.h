@@ -14,6 +14,8 @@ extern const struct kpayload_offsets *fw_offsets PAYLOAD_BSS;
 struct kpayload_offsets {
   // data
   uint32_t XFAST_SYSCALL_addr;
+  uint32_t PRISON0_addr;
+  uint32_t ROOTVNODE_addr;
   uint32_t M_TEMP_addr;
   uint32_t MINI_SYSCORE_SELF_BINARY_addr;
   uint32_t ALLPROC_addr;

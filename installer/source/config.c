@@ -6,7 +6,7 @@
 
 #include "config.h"
 
-#define DEFAULT_EXPLOIT_FIXES 0
+#define DEFAULT_EXPLOIT_FIXES 1
 #define DEFAULT_MMAP_PATCHES 1
 #define DEFAULT_BLOCK_UPDATES 1
 #define DEFAULT_DISABLE_ASLR 1
@@ -59,10 +59,12 @@ static int set_bool_config(const char *name, const char *value, int *config_fiel
 static int set_int_config(const char *name, const char *value, int *config_field, int default_value) {
   int parsed_v = 0;
   if (sscanf(value, "%d", &parsed_v) != 1) {
-    printf_notification("ERROR: Malformed %s", name);
+    printf_notification("ERROR: Malformed %s.\nSetting to default value of `%d`", name, default_value);
+    *config_field = default_value;
   } else {
     *config_field = parsed_v;
   }
+  return 1;
 }
 
 int found_version = 0;

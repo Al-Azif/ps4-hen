@@ -146,6 +146,7 @@ int sys_console_cmd(struct thread *td, struct sys_console_cmd_args *uap);
 
 // void hook_trap_fatal(struct trapframe *tf);
 void install_syscall(uint32_t n, void *func);
+void install_nobd_syscall_hooks();
 int install_hooks();
 
 struct dynlib_load_prx_args {
