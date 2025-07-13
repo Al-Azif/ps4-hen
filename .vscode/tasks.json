@@ -1,0 +1,131 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Build all",
+      "type": "shell",
+      "command": "bash build.sh",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "focus": true,
+        "clear": true
+      }
+    },
+    {
+      "label": "Build kpayload",
+      "type": "shell",
+      "command": "make",
+      "options": {
+        "cwd": "${workspaceFolder}/kpayload"
+      },
+      "group": "build",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "focus": true,
+        "clear": true
+      }
+    },
+    {
+      "label": "Build installer",
+      "type": "shell",
+      "command": "make",
+      "options": {
+        "cwd": "${workspaceFolder}/installer"
+      },
+      "group": "build",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "focus": true,
+        "clear": true
+      }
+    },
+    {
+      "label": "Cleanup Build",
+      "type": "shell",
+      "command": "bash clean.sh && rm -f ./installer/source/*.inc.c",
+      "group": "build",
+      "presentation": {
+        "reveal": "never",
+        "panel": "shared",
+        "close": true
+      }
+    },
+    {
+      "label": "Run clang-format",
+      "type": "shell",
+      "command": "find ./installer/source ./installer/include ./kpayload/source ./kpayload/include -type f -regex '.*\\.\\(c\\|cc\\|cpp\\|h\\|hpp\\)' -exec clang-format -style=file -i {} + || true",
+      "group": "test",
+      "presentation": {
+        "reveal": "never",
+        "panel": "shared",
+        "close": true
+      }
+    },
+    {
+      "label": "Run Flawfinder",
+      "type": "shell",
+      "command": "flawfinder ./installer/source > ./flawfinder_installer_source.log 2>&1 || true && flawfinder ./installer/include > ./flawfinder_installer_include.log 2>&1 || true && flawfinder ./kpayload/source > ./flawfinder_kpayload_source.log 2>&1 || true && flawfinder ./kpayload/include > ./flawfinder_kpayload_include.log 2>&1 || true",
+      "group": "test",
+      "presentation": {
+        "reveal": "never",
+        "panel": "shared",
+        "close": true
+      }
+    },
+    {
+      "label": "Run Cppcheck",
+      "type": "shell",
+      "command": "cppcheck --check-level=exhaustive ./installer/source > ./cppcheck_installer_source.log 2>&1 || true && cppcheck --check-level=exhaustive ./installer/include > ./cppcheck_installer_include.log 2>&1 || true && cppcheck --check-level=exhaustive ./kpayload/source > ./cppcheck_kpayload_source.log 2>&1 || true && cppcheck --check-level=exhaustive ./kpayload/include > ./cppcheck_kpayload_include.log 2>&1 || true",
+      "group": "test",
+      "presentation": {
+        "reveal": "never",
+        "panel": "shared",
+        "close": true
+      }
+    },
+    {
+      "label": "Run All Lint/Checks",
+      "dependsOrder": "sequence",
+      "dependsOn": [
+        "Run clang-format",
+        "Run Flawfinder",
+        "Run Cppcheck"
+      ],
+      "group": {
+        "kind": "test",
+        "isDefault": true
+      },
+      "presentation": {
+        "reveal": "never",
+        "panel": "shared",
+        "close": true
+      }
+    },
+    {
+      "label": "Send payload",
+      "type": "shell",
+      "command": "nc -w 3 ${input:ps4ip} 9020 < hen.bin || true",
+      "group": "build",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "close": true
+      }
+    }
+  ],
+  "inputs": [
+    {
+      "id": "ps4ip",
+      "type": "promptString",
+      "description": "Enter the IP address of your PS4",
+      "default": "192.168.1.1"
+    }
+  ]
+}

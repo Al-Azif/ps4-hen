@@ -216,7 +216,7 @@ PAYLOAD_CODE int shellcore_patch(void) {
 
   // check_disc_root_param_patch
   // Varies per FW
-  if (fw_version <= 904) {
+  if (fw_version >= 500 && fw_version <= 904) {
     ret = proc_write_mem(ssc, (void *)(text_seg_base + fw_offsets->check_disc_root_param_patch), 2, "\x90\xE9", &n);
     if (ret) {
       goto error;
@@ -256,9 +256,9 @@ PAYLOAD_CODE int shellcore_patch(void) {
   // enable fpkg for patches
   // Varies per FW
   const char *enable_fpkg_patch_data;
-  if (fw_version >= 500 && fw_version <= 620) {
+  if (fw_version >= 474 && fw_version <= 620) {
     enable_fpkg_patch_data = "\xE9\x96\x00\x00\x00";
-  } else if (fw_version >= 650 && fw_version <= 1250) {
+  } else if (fw_version >= 650 && fw_version <= 1252) {
     enable_fpkg_patch_data = "\xE9\x98\x00\x00\x00";
   } else {
     enable_fpkg_patch_data = "\xE9\x98\x00\x00\x00";
@@ -348,9 +348,18 @@ PAYLOAD_CODE int shellui_patch(void) {
   }
 
   for (size_t i = 0; i < num_entries; i++) {
-    if (!memcmp(entries[i].name, "app.exe.sprx", 12) && (entries[i].prot >= (PROT_READ | PROT_EXEC))) {
-      app_base = (uint8_t *)entries[i].start;
-      break;
+    // Varies per FW
+    if (fw_version < 500) {
+      if (!memcmp(entries[i].name, "libSceVsh_aot.sprx", 18) && (entries[i].prot >= (PROT_READ | PROT_EXEC))) {
+        app_base = (uint8_t *)entries[i].start;
+        break;
+      }
+    } else {
+      // >= 5.00
+      if (!memcmp(entries[i].name, "app.exe.sprx", 12) && (entries[i].prot >= (PROT_READ | PROT_EXEC))) {
+        app_base = (uint8_t *)entries[i].start;
+        break;
+      }
     }
   }
 
@@ -362,7 +371,9 @@ PAYLOAD_CODE int shellui_patch(void) {
   // enable remote play menu - credits to Aida
   // Varies per FW
   const char *remote_play_patch_data;
-  if (fw_version >= 500 && fw_version <= 507) {
+  if (fw_version == 474) {
+    remote_play_patch_data = "\xE9\x22\x02\x00\x00";
+  } else if (fw_version >= 500 && fw_version <= 507) {
     remote_play_patch_data = "\xE9\x82\x02\x00\x00";
   } else if (fw_version >= 550 && fw_version <= 620) {
     remote_play_patch_data = "\xE9\xB8\x02\x00\x00";
@@ -370,7 +381,7 @@ PAYLOAD_CODE int shellui_patch(void) {
     remote_play_patch_data = "\xE9\xBA\x02\x00\x00";
   } else if (fw_version >= 950 && fw_version <= 960) {
     remote_play_patch_data = "\xE9\xA2\x02\x00\x00";
-  } else if (fw_version >= 1000 && fw_version <= 1250) {
+  } else if (fw_version >= 1000 && fw_version <= 1252) {
     remote_play_patch_data = "\xE9\x5C\x02\x00\x00";
   } else {
     remote_play_patch_data = "\xE9\x5C\x02\x00\x00";

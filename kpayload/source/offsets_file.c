@@ -6,34 +6,23 @@
 
 // clang-format off
 
-// #include "offsets/474.h"
-// #include "offsets/500.h"
-// #include "offsets/501.h"
-// #include "offsets/503.h"
+#include "offsets/474.h"
+#include "offsets/500.h"
+#include "offsets/501.h"
+#include "offsets/503.h"
 #include "offsets/505.h"
-// #include "offsets/507.h"
-// #include "offsets/550.h"
-// #include "offsets/553.h"
-// #include "offsets/555.h"
-// #include "offsets/556.h"
-// #include "offsets/600.h"
-// #include "offsets/602.h"
-// #include "offsets/620.h"
-// #include "offsets/650.h"
-// #include "offsets/651.h"
-// #include "offsets/670.h"
-// #include "offsets/671.h"
-#include "offsets/1000.h"
-#include "offsets/1001.h"
-#include "offsets/1050.h"
-#include "offsets/1070.h"
-#include "offsets/1071.h"
-#include "offsets/1100.h"
-#include "offsets/1102.h"
-#include "offsets/1150.h"
-#include "offsets/1152.h"
-#include "offsets/1200.h"
-#include "offsets/1202.h"
+#include "offsets/507.h"
+#include "offsets/550.h"
+#include "offsets/553.h"
+#include "offsets/555.h"
+#include "offsets/556.h"
+#include "offsets/600.h"
+#include "offsets/602.h"
+#include "offsets/620.h"
+#include "offsets/650.h"
+#include "offsets/651.h"
+#include "offsets/670.h"
+#include "offsets/671.h"
 #include "offsets/672.h"
 #include "offsets/700.h"
 #include "offsets/701.h"
@@ -52,14 +41,58 @@
 #include "offsets/950.h"
 #include "offsets/951.h"
 #include "offsets/960.h"
+#include "offsets/1000.h"
+#include "offsets/1001.h"
+#include "offsets/1050.h"
+#include "offsets/1070.h"
+#include "offsets/1071.h"
+#include "offsets/1100.h"
+#include "offsets/1102.h"
+#include "offsets/1150.h"
+#include "offsets/1152.h"
+#include "offsets/1200.h"
+#include "offsets/1202.h"
 #include "offsets/1250.h"
+#include "offsets/1252.h"
 
 // clang-format on
 
 PAYLOAD_CODE const struct kpayload_offsets *get_offsets_for_fw(uint16_t fw_version) {
   switch (fw_version) {
+  case 474:
+    return &offsets_474;
+  case 500:
+    return &offsets_500;
+  case 501:
+    return &offsets_501;
+  case 503:
+    return &offsets_503;
   case 505:
     return &offsets_505;
+  case 507:
+    return &offsets_507;
+  case 550:
+    return &offsets_550;
+  case 553:
+    return &offsets_553;
+  case 555:
+    return &offsets_555;
+  case 556:
+    return &offsets_556;
+  case 600:
+    return &offsets_600;
+  case 602:
+    return &offsets_602;
+  case 620:
+    return &offsets_620;
+  case 650:
+    return &offsets_650;
+  case 651:
+    return &offsets_651;
+  case 670:
+    return &offsets_670;
+  case 671:
+    return &offsets_671;
   case 672:
     return &offsets_672;
   case 700:
@@ -120,6 +153,8 @@ PAYLOAD_CODE const struct kpayload_offsets *get_offsets_for_fw(uint16_t fw_versi
     return &offsets_1202;
   case 1250:
     return &offsets_1250;
+  case 1252:
+    return &offsets_1252;
   default:
     return NULL;
   }

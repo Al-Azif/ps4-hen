@@ -11,6 +11,7 @@
 #include "path.h"
 #include "plugins.h"
 #include "version.h"
+#include "patch.h"
 
 // TODO: Where should this go? `common.c` doesn't feel right
 // Apply target ID spoofing if configured
@@ -24,9 +25,7 @@ static void set_target_id(char *tid) {
   int buffer_size = sizeof(buffer);
   switch (hex) {
   case 0:
-  {
     break;
-  }
   case 0x80:
     snprintf(buffer, buffer_size, "Diagnostic");
     break;
@@ -87,7 +86,6 @@ static void set_target_id(char *tid) {
     printf_notification("ERROR: Unable to spoof target ID");
     return;
   }
-
 }
 
 int _main(struct thread *td) {
@@ -126,10 +124,6 @@ int _main(struct thread *td) {
   install_patches();
 
   // Initialize config
-  // Write current config if it doesn't exist yet
-  if (!file_exists(HDD_INI_PATH)) {
-    upload_ini(HDD_INI_PATH);
-  }
   struct configuration config;
   init_config(&config);
 
@@ -137,7 +131,7 @@ int _main(struct thread *td) {
   const bool found_ver = found_version == 0;
   if (file_exists(HDD_INI_PATH) && (ver_match || found_ver)) {
     const char *reason = " unknown!";
-    if (ver_match)    {
+    if (ver_match) {
       reason = " out of date!";
     } else if (found_ver) {
       reason = " not found!";
@@ -150,9 +144,9 @@ int _main(struct thread *td) {
     if (found_usb) {
       upload_ini(USB_INI_PATH);
     }
-    init_config(&config);
     printf_notification("Config version (%d/%d)%s\n"
                         "Updating settings file on %s%s...", config.config_version, DEFAULT_CONFIG_VERSION, reason, "HDD", found_usb ? " and USB" : "");
+    init_config(&config);
     // sleep so user can see welcome message before shellui restarts
     usleep(sleep_sec * u_to_sec);
   }
@@ -194,6 +188,10 @@ int _main(struct thread *td) {
   if (config.upload_prx) {
     printf_debug("Writing plugin PRXs to disk...\n");
     upload_prx_to_disk();
+  }
+
+  if (!config.skip_patches) {
+    InstallShellCoreCodeForAppinfo();
   }
 
   printf_notification("Welcome to HEN %s", VERSION);

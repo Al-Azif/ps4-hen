@@ -17,7 +17,7 @@ mkdir -p tmp
 pushd tmp > /dev/null
 
 # known bundled plugins
-PRX_FILES="plugin_bootloader.prx plugin_loader.prx plugin_mono.prx plugin_server.prx"
+PRX_FILES="plugin_bootloader.prx plugin_loader.prx plugin_mono.prx plugin_server.prx plugin_shellcore.prx"
 
 SKIP_DOWNLOAD=false
 if [ -f plugins.zip ]; then

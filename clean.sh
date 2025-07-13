@@ -1,13 +1,15 @@
 #!/bin/bash
+set -e
 
-cd kpayload
+pushd kpayload > /dev/null
 make clean
-cd ..
+popd > /dev/null
 
-rm -rf tmp
+rm -rf tmp/*
 
-cd installer
+pushd installer > /dev/null
 make clean
-cd ..
+rm -f source/*.inc.c
+popd > /dev/null
 
 rm -f hen.bin

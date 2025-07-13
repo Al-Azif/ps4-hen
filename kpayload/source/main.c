@@ -93,6 +93,7 @@ int (*sys_dynlib_dlsym)(void *param_1, void *param_2) PAYLOAD_BSS;
 extern void install_fself_hooks(void) PAYLOAD_CODE;
 extern void install_fpkg_hooks(void) PAYLOAD_CODE;
 extern void install_patches(void) PAYLOAD_CODE;
+extern void install_nobd_syscall_hooks(void) PAYLOAD_CODE;
 extern void install_syscall_hooks(void) PAYLOAD_CODE;
 extern void *get_syscall(uint64_t n) PAYLOAD_CODE;
 

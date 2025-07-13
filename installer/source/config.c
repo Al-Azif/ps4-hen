@@ -19,7 +19,7 @@
 
 #define MATCH(n) strcmp(name, n) == 0
 
-void upload_ini(const char* path) {
+void upload_ini(const char *path) {
   write_blob(path, hen_ini, hen_ini_len);
 }
 
@@ -41,29 +41,30 @@ static void set_config_defaults(struct configuration *config) {
   // target_id is already zeroed by memset, which means no spoofing
 }
 
-// Helper function to validate and set boolean config values (0 or 1)
+// Helper function to validate and set boolean config values (0, false, 1, or true)
 static int set_bool_config(const char *name, const char *value, int *config_field, int default_value) {
-  if (strcmp(value, "0") == 0) {
+  if (strcmp(value, "0") == 0 || strcasecmp(value, "false") == 0) {
     *config_field = 0;
     return 1;
-  } else if (strcmp(value, "1") == 0) {
+  } else if (strcmp(value, "1") == 0 || strcasecmp(value, "true") == 0) {
     *config_field = 1;
     return 1;
-  } else {
-    printf_notification("ERROR: Invalid %s:\n    Must be 0 or 1", name);
-    *config_field = default_value;
-    return 1;
   }
+
+  printf_notification("ERROR: Invalid %s:\n    Must be 0 or 1 (false or true)", name);
+  *config_field = default_value;
+  return 1;
 }
 
 static int set_int_config(const char *name, const char *value, int *config_field, int default_value) {
   int parsed_v = 0;
-  if (sscanf(value, "%d", &parsed_v) != 1) {
-    printf_notification("ERROR: Malformed %s.\nSetting to default value of `%d`", name, default_value);
-    *config_field = default_value;
-  } else {
+  if (sscanf(value, "%d", &parsed_v) == 1) {
     *config_field = parsed_v;
+    return 1;
   }
+
+  printf_notification("ERROR: Malformed %s", name);
+  *config_field = default_value;
   return 1;
 }
 
@@ -151,6 +152,8 @@ int init_config(struct configuration *config) {
     } else {
       ret = 0;
     }
+  } else {
+    upload_ini(HDD_INI_PATH);
   }
 
   return ret;

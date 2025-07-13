@@ -10,6 +10,8 @@
 #define PRX_LOADER_PATH BASE_PATH "/plugin_loader.prx"
 #define PRX_SERVER_PATH BASE_PATH "/plugin_server.prx"
 #define PRX_MONO_PATH BASE_PATH "/plugin_mono.prx"
+#define PRX_SHELLCORE_PATH BASE_PATH "/plugin_shellcore.prx"
 #define IS_INSTALLED_PATH "/user/temp/hen.installed"
+#define IS_SHELLCORE_APPINFO_INSTALLED_PATH "/user/temp/shellcore_appinfo.installed"
 
 #endif

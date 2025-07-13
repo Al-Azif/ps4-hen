@@ -1,9 +1,10 @@
 // Most of this code has been taken from ps4debug
 // https://github.com/kruniak/ps4debug
 //
+
+#include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
-#include <stdbool.h>
 
 #include "amd_helper.h"
 #include "elf_helper.h"
@@ -272,7 +273,7 @@ PAYLOAD_CODE int sys_dynlib_load_prx_hook(struct thread *td, struct dynlib_load_
   // https://github.com/OpenOrbis/mira-project/blob/d8cc5790f08f93267354c2370eb3879edba0aa98/kernel/src/Plugins/Substitute/Substitute.cpp#L1003
   const char *titleid = td->td_proc->titleid;
   const char *p = args->prx_path ? args->prx_path : "";
-  //printf("%s td_name %s titleid %s prx %s\n", __FUNCTION__, td->td_name, titleid, p);
+  // printf("%s td_name %s titleid %s prx %s\n", __FUNCTION__, td->td_name, titleid, p);
   const uint8_t jmp[] = {0xff, 0x25, 0x00, 0x00, 0x00, 0x00};
   if (strstr(p, "/app0/sce_module/libc.prx")) {
     const int handle_out = args->handle_out ? *args->handle_out : 0;
@@ -292,18 +293,14 @@ PAYLOAD_CODE int sys_dynlib_load_prx_hook(struct thread *td, struct dynlib_load_
   }
   const bool isPartyDaemon = strstr(td->td_name, "ScePartyDaemonMain") != NULL;
   const bool isShellUI = strstr(td->td_name, "SceShellUIMain") != NULL;
-  //printf("%d %d\n", isPartyDaemon, isShellUI);
-  if (strstr(p, "/common/lib/libSceSysmodule.sprx") && (isPartyDaemon || isShellUI))
-  {
+  // printf("%d %d\n", isPartyDaemon, isShellUI);
+  if (strstr(p, "/common/lib/libSceSysmodule.sprx") && (isPartyDaemon || isShellUI)) {
     // dummy process to load server prx into
     struct dynlib_load_prx_args my_args = {};
     int handle = 0;
-    if (isPartyDaemon)
-    {
+    if (isPartyDaemon) {
       my_args.prx_path = PRX_SERVER_PATH;
-    }
-    else if (isShellUI)
-    {
+    } else if (isShellUI) {
       my_args.prx_path = PRX_MONO_PATH;
     }
     my_args.handle_out = &handle;
@@ -348,8 +345,8 @@ struct sys_jailbreak_filedesc {
 };
 
 PAYLOAD_CODE void *sys_jailbreak(struct thread *td) {
-  struct sys_jailbreak_ucred *cred = td->td_proc->p_ucred;
-  struct sys_jailbreak_filedesc *fd = td->td_proc->p_fd;
+  struct sys_jailbreak_ucred *cred = (struct sys_jailbreak_ucred *)td->td_proc->p_ucred;
+  struct sys_jailbreak_filedesc *fd = (struct sys_jailbreak_filedesc *)td->td_proc->p_fd;
 
   void *td_ucred = *(void **)(((char *)td) + 304); // p_ucred == td_ucred
 
